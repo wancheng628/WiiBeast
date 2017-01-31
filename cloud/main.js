@@ -397,13 +397,13 @@ Parse.Cloud.define("testCurrentUser", function(request, response) {
  
 Parse.Cloud.define("removeConversation", function(request, response) {
      
-    Parse.Cloud.useMasterKey();
+    //Parse.Cloud.useMasterKey();
      
 });
  
 Parse.Cloud.define("validateFriendRequest", function(request, response) {
      
-    Parse.Cloud.useMasterKey();
+    //Parse.Cloud.useMasterKey();
      
     var toUserId = request.params.toUser;
     var fromUserId = request.params.fromUser;
@@ -412,7 +412,7 @@ Parse.Cloud.define("validateFriendRequest", function(request, response) {
     // other user already friend request
      
     var toUserQuery = new Parse.Query(Parse.User);
-    toUserQuery.get(fromUserId).then(function(fromUser) {
+    toUserQuery.get(fromUserId, {useMasterKey: true}).then(function(fromUser) {
         var fromUserFriends = fromUser.relation("friends");
         from
     }).then(function(user){
@@ -436,7 +436,7 @@ Parse.Cloud.define("sendFriendRequest", function(request, response) {
                      
                     var toUserRequests = toUser.relation("friendRequests");
                     toUserRequests.add(fromUser);
-                    toUser.save(null, {
+                    toUser.save(null, {useMasterKey: true,
                         success: function(object) {
  
                             var deviceQuery = new Parse.Query(Parse.Installation);
@@ -449,7 +449,7 @@ Parse.Cloud.define("sendFriendRequest", function(request, response) {
                                     badge: "Increment",
                                     type: "friendRequest"
                                   }
-                                }, {
+                                }, {useMasterKey: true, 
                                   success: function() {
                                     response.success(true);
                                   },
@@ -470,7 +470,7 @@ Parse.Cloud.define("sendFriendRequest", function(request, response) {
           response.error(error);
         }
  
-      });
+      }, {useMasterKey: true});
  
     },
     error: function(error) {
@@ -482,7 +482,7 @@ Parse.Cloud.define("sendFriendRequest", function(request, response) {
  
 Parse.Cloud.define("acceptFriendRequest", function(request, response) {
  
-  Parse.Cloud.useMasterKey();
+  //Parse.Cloud.useMasterKey();
   var acceptingUser = request.user;
   var sendingUserId = request.params.sendingUser;
  
@@ -505,13 +505,13 @@ Parse.Cloud.define("acceptFriendRequest", function(request, response) {
     error: function(error){
       response.error(error);
     }
-  })
+  }, {useMasterKey: true})
  
 });
  
 Parse.Cloud.define("unfriendUser", function(request, response) {
  
-  Parse.Cloud.useMasterKey();
+  //Parse.Cloud.useMasterKey();
   var currentUser = request.user;
   var unfriendedUserId = request.params.unfriendedUser;
  
@@ -534,13 +534,13 @@ Parse.Cloud.define("unfriendUser", function(request, response) {
     error: function(error){
       response.error(error);
     }
-  })
+  }, {useMasterKey: true})
  
 });
  
 Parse.Cloud.define("acceptFriendRequest420", function(request, response) {
  
-  Parse.Cloud.useMasterKey();
+  //Parse.Cloud.useMasterKey();
   var acceptingUserId = request.params.acceptingUser;
   var sendingUserId = request.params.sendingUser;
   var acceptingUser = null;
@@ -552,7 +552,7 @@ Parse.Cloud.define("acceptFriendRequest420", function(request, response) {
       acceptingUser = _acceptingUser;
  
       var sendingUserQuery = new Parse.Query(Parse.User);
-      sendingUserQuery.get(sendingUserId, {
+      sendingUserQuery.get(sendingUserId, {useMasterKey: true,
         success: function(sendingUser){
  
           var acceptingUserRequests = acceptingUser.relation("friendRequests");
@@ -567,7 +567,7 @@ Parse.Cloud.define("acceptFriendRequest420", function(request, response) {
           itemsToSave.push(acceptingUser);
           itemsToSave.push(sendingUser);
  
-          Parse.Object.saveAll(itemsToSave, {
+          Parse.Object.saveAll(itemsToSave, {useMasterKey: true,
             success: function() {
               response.success(true);
             },
@@ -586,13 +586,13 @@ Parse.Cloud.define("acceptFriendRequest420", function(request, response) {
     error: function(error){
       response.error(error);
     }
-  });
+  }, {useMasterKey: true});
  
 });
  
 Parse.Cloud.define("acceptFriendRequestSemi", function(request, response) {
  
-  Parse.Cloud.useMasterKey();
+  //Parse.Cloud.useMasterKey();
   var acceptingUserId = request.params.acceptingUser;
   var sendingUserId = request.params.sendingUser;
  
@@ -618,16 +618,16 @@ Parse.Cloud.define("acceptFriendRequestSemi", function(request, response) {
                 success: function(object) {
                   response.success(true);
                 }
-              });
+              }, {useMasterKey: true});
  
             }
-          });
+          }, {useMasterKey: true});
  
         },
         error: function(error) {
           response.error(error);
         }
-      });
+      }, {useMasterKey: true});
  
     },
     error: function(error){
@@ -639,7 +639,7 @@ Parse.Cloud.define("acceptFriendRequestSemi", function(request, response) {
  
 Parse.Cloud.define("acceptFriendRequest2", function(request, response) {
  
-  Parse.Cloud.useMasterKey();
+  //Parse.Cloud.useMasterKey();
   var acceptingUserId = request.params.acceptingUser;
   var sendingUserId = request.params.sendingUser;
  
@@ -665,16 +665,16 @@ Parse.Cloud.define("acceptFriendRequest2", function(request, response) {
                 success: function(object) {
                   response.success(true);
                 }
-              });
+              }, {useMasterKey: true});
  
             }
-          });
+          }, {useMasterKey: true});
  
         },
         error: function(error) {
           response.error(error);
         }
-      });
+      }, {useMasterKey: true});
  
     },
     error: function(error){
@@ -757,7 +757,7 @@ Parse.Cloud.define("deincrementLike", function(request, response) {
  
 Parse.Cloud.afterSave("Chat", function(request) {
  
-  Parse.Cloud.useMasterKey();
+  //Parse.Cloud.useMasterKey();
  
   var fromUserId = request.object.get("fromUser").id;
   var toUserId = request.object.get("toUser").id;
@@ -784,20 +784,20 @@ Parse.Cloud.afterSave("Chat", function(request) {
                 badge: "Increment",
                 type: "chatMessage"
               }
-            }, {
+            }, { 
               success: function() {
  
               },
               error: function(error) {
                 // Handle error
               }
-            });
+            }, {useMasterKey: true});
  
           }
-        });
+        }, {useMasterKey: true});
  
       }
-  });
+  }, {useMasterKey: true});
  
  
  
@@ -805,7 +805,7 @@ Parse.Cloud.afterSave("Chat", function(request) {
  
 Parse.Cloud.afterSave("Notification", function(request) {
  
-  Parse.Cloud.useMasterKey();
+  //Parse.Cloud.useMasterKey();
  
   var fromUserId = request.object.get("fromUser").id;
   var toUserId = request.object.get("toUser").id;
@@ -830,18 +830,18 @@ Parse.Cloud.afterSave("Notification", function(request) {
                 badge: "Increment",
                 type: "Post Notification"
               }
-            }, {
+            }, { 
               success: function() {
  
               },
               error: function(error) {
                 // Handle error
               }
-            });
+            }, {useMasterKey: true});
  
           }
-        });
+        }, {useMasterKey: true});
  
       }
-  });
+  }, {useMasterKey: true});
 });
