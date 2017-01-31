@@ -22,10 +22,10 @@ var api = new ParseServer({
   },
   push: {
       ios: {
-        pfx: 'wiibeastapnsCertificates.p12',
+        pfx: 'wiibeastdevapnsCertificates.p12',
         passphrase: '', // optional password to your p12/PFX
         bundleId: 'com.wiibeast.WiiBeast',
-        production: true
+        production: false
       }
   },
   verifyUserEmails: false,
