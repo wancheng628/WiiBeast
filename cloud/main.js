@@ -423,15 +423,15 @@ Parse.Cloud.define("validateFriendRequest", function(request, response) {
  
 Parse.Cloud.define("sendFriendRequest", function(request, response) {
      
-    Parse.Cloud.useMasterKey();
+    //Parse.Cloud.useMasterKey();
     var fromUserId = request.params.fromUser;
     var toUserId = request.params.toUser;
     var toUserQuery = new Parse.Query(Parse.User);
-    toUserQuery.get(toUserId, {
+    toUserQuery.get(toUserId, {useMasterKey: true,
         success: function(toUser) {
              
             var fromUserQuery = new Parse.Query(Parse.User);
-            fromUserQuery.get(fromUserId, {
+            fromUserQuery.get(fromUserId, {useMasterKey: true,
                 success: function(fromUser){
                      
                     var toUserRequests = toUser.relation("friendRequests");
@@ -470,7 +470,7 @@ Parse.Cloud.define("sendFriendRequest", function(request, response) {
           response.error(error);
         }
  
-      }, {useMasterKey: true});
+      });
  
     },
     error: function(error) {
@@ -487,12 +487,13 @@ Parse.Cloud.define("acceptFriendRequest", function(request, response) {
   var sendingUserId = request.params.sendingUser;
  
   var sendingUserQuery = new Parse.Query(Parse.User);
-  sendingUserQuery.get(sendingUserId, {
+  sendingUserQuery.get(sendingUserId, {useMasterKey: true,
     success: function(sendingUser){
  
       var sendingUserFriends = sendingUser.relation("friends");
       sendingUserFriends.add(acceptingUser);
       sendingUser.save(null, {
+		  useMasterKey: true,
         success: function(){
           response.success(true);
         },
@@ -505,7 +506,7 @@ Parse.Cloud.define("acceptFriendRequest", function(request, response) {
     error: function(error){
       response.error(error);
     }
-  }, {useMasterKey: true})
+  })
  
 });
  
@@ -601,7 +602,7 @@ Parse.Cloud.define("acceptFriendRequestSemi", function(request, response) {
     success: function(acceptingUser) {
  
       var sendingUserQuery = new Parse.Query(Parse.User);
-      sendingUserQuery.get(sendingUserId, {
+      sendingUserQuery.get(sendingUserId, {useMasterKey: true,
         success: function(sendingUser) {
  
           var acceptingUserRequests = acceptingUser.relation("friendRequests");
@@ -609,25 +610,25 @@ Parse.Cloud.define("acceptFriendRequestSemi", function(request, response) {
  
           var acceptingUserFriends = acceptingUser.relation("friends");
           acceptingUser.add(sendingUser);
-          acceptingUser.save(null, {
+          acceptingUser.save(null, {useMasterKey: true,
             success: function(object) {
  
               var sendingUserFriends = sendingUser.relation("friends");
               sendingUserFriends.add(acceptingUser);
-              sendingUser.save(null, {
+              sendingUser.save(null, {useMasterKey: true,
                 success: function(object) {
                   response.success(true);
                 }
-              }, {useMasterKey: true});
+              });
  
             }
-          }, {useMasterKey: true});
+          });
  
         },
         error: function(error) {
           response.error(error);
         }
-      }, {useMasterKey: true});
+      });
  
     },
     error: function(error){
@@ -644,11 +645,11 @@ Parse.Cloud.define("acceptFriendRequest2", function(request, response) {
   var sendingUserId = request.params.sendingUser;
  
   var acceptingUserQuery = new Parse.Query(Parse.User);
-  acceptingUserQuery.get(acceptingUserId, {
+  acceptingUserQuery.get(acceptingUserId, {useMasterKey: true,
     success: function(acceptingUser) {
  
       var sendingUserQuery = new Parse.Query(Parse.User);
-      sendingUserQuery.get(sendingUserId, {
+      sendingUserQuery.get(sendingUserId, {useMasterKey: true,
         success: function(sendingUser) {
  
           var acceptingUserRequests = acceptingUser.relation("friendRequests");
@@ -656,7 +657,7 @@ Parse.Cloud.define("acceptFriendRequest2", function(request, response) {
  
           var acceptingUserFriends = acceptingUser.relation("friends");
           acceptingUser.add(sendingUser);
-          acceptingUser.save(null, {
+          acceptingUser.save(null, {useMasterKey: true,
             success: function(object) {
  
               var sendingUserFriends = sendingUser.relation("friends");
@@ -665,16 +666,16 @@ Parse.Cloud.define("acceptFriendRequest2", function(request, response) {
                 success: function(object) {
                   response.success(true);
                 }
-              }, {useMasterKey: true});
+              });
  
             }
-          }, {useMasterKey: true});
+          });
  
         },
         error: function(error) {
           response.error(error);
         }
-      }, {useMasterKey: true});
+      });
  
     },
     error: function(error){
@@ -690,7 +691,7 @@ Parse.Cloud.define("incrementLike", function(request, response) {
   var likingUserId = request.params.likingUser;
  
   var likingUserQuery = new Parse.Query(Parse.User);
-  likingUserQuery.get(likingUserId, {
+  likingUserQuery.get(likingUserId, {useMasterKey: true,
     success: function(likingUser) {
  
       var postQuery = Parse.Query("Post");
@@ -720,7 +721,7 @@ Parse.Cloud.define("deincrementLike", function(request, response) {
   var dislikingUserId = request.params.likingUser;
  
   var dislikingUserQuery = new Parse.Query(Parse.User);
-  likingUserQuery.get(dislikingUserId, {
+  likingUserQuery.get(dislikingUserId, {useMasterKey: true,
     success: function(dislikingUser) {
  
       var postQuery = Parse.Query("Post");
@@ -764,11 +765,11 @@ Parse.Cloud.afterSave("Chat", function(request) {
   var message = request.object.get("message");
  
   var toUserQuery = new Parse.Query(Parse.User);
-  toUserQuery.get(toUserId, {
+  toUserQuery.get(toUserId, {useMasterKey: true,
       success: function(toUser) {
  
         var fromUserQuery = new Parse.Query(Parse.User);
-        fromUserQuery.get(fromUserId, {
+        fromUserQuery.get(fromUserId, {useMasterKey: true,
           success: function(fromUser) {
  
             var fromUsername = fromUser.get("username");
@@ -784,20 +785,20 @@ Parse.Cloud.afterSave("Chat", function(request) {
                 badge: "Increment",
                 type: "chatMessage"
               }
-            }, { 
+            }, { useMasterKey: true,
               success: function() {
  
               },
               error: function(error) {
                 // Handle error
               }
-            }, {useMasterKey: true});
+            });
  
           }
-        }, {useMasterKey: true});
+        });
  
       }
-  }, {useMasterKey: true});
+  });
  
  
  
@@ -811,11 +812,11 @@ Parse.Cloud.afterSave("Notification", function(request) {
   var toUserId = request.object.get("toUser").id;
   var text = request.object.get("text");
   var toUserQuery = new Parse.Query(Parse.User);
-  toUserQuery.get(toUserId, {
+  toUserQuery.get(toUserId, {useMasterKey: true,
       success: function(toUser) {
  
         var fromUserQuery = new Parse.Query(Parse.User);
-        fromUserQuery.get(fromUserId, {
+        fromUserQuery.get(fromUserId, {useMasterKey: true,
           success: function(fromUser) {
  
             var fromUsername = fromUser.get("username");
@@ -830,18 +831,18 @@ Parse.Cloud.afterSave("Notification", function(request) {
                 badge: "Increment",
                 type: "Post Notification"
               }
-            }, { 
+            }, { useMasterKey: true,
               success: function() {
  
               },
               error: function(error) {
                 // Handle error
               }
-            }, {useMasterKey: true});
+            });
  
           }
-        }, {useMasterKey: true});
+        });
  
       }
-  }, {useMasterKey: true});
+  });
 });
